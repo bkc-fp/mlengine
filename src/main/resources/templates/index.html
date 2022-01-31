@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geo NER Application</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<form>
+    <div class="container">
+        <h3>Input:</h3>
+        <div class="form-group">
+            <label for="topicType">Select Data Type</label>
+            <select class="form-control" id="topicType" >
+                <option value="TWEET">Tweet</option>
+                <option value="FORUM">Forum Post</option>
+                <option value="ARTICLE">Article Blog</option>
+            </select>
+            <label for="language">Select Language</label>
+            <select class="form-control" id="language" >
+                <option value="EN">English</option>
+                <option value="AB">Arabic</option>
+                <option value="CH">Chinese</option>
+                <option value="RU">Russian</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <!--<label for="input">Enter Your Text Here</label>-->
+            <textarea id="input" class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="coreType">Select Type</label>
+            <select class="form-control" id="coreType" onchange="coreNer(value)">
+                <option value=""></option>
+                <option value="ALL">All</option>
+                <option value="CITY">City</option>
+                <!--<option value="LOCATION">Location</option>
+                <option value="STATE_OR_PROVINCE">State</option>
+                <option value="COUNTRY">Country</option>-->
+            </select>
+        </div>
+        <h3>Stanford output:</h3>
+        <div class="form-group" id="coreResult"></div>
+
+        <div class="form-group">
+            <label for="fpType">Select Type</label>
+            <select class="form-control" id="fpType" onchange="fpNer(value)">
+                <option value=""></option>
+                <option value="ALL">All</option>
+                <option value="CITY">City</option>
+                <!--<option value="LOCATION">Location</option>
+                <option value="STATE_OR_PROVINCE">State</option>
+                <option value="COUNTRY">Country</option>-->
+            </select>
+        </div>
+        <h3>Flashpoint output:</h3>
+        <div class="form-group" id="fpResult"></div>
+
+        <div class="form-group">
+            <!--<label for="input">Enter Your Text Here</label>-->
+            <textarea id="corrected" class="form-control" rows="5"></textarea>
+        </div>
+        <button type="button" class="btn btn-info">Save</button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    function coreNer(coreType) {
+        var input = $("#input").val();
+
+        $.ajax({
+            type: 'POST',
+            url: "http://localhost:8080/api/coreNer?type="+coreType,
+            contentType: 'text/plain; charset=utf-8',
+            data: input,
+            success: function(response) {
+                var coreResult = "";
+                $.each(response, function(index, value) {
+                    coreResult = coreResult + "<span class='badge badge-success'>" + value + "</span>&nbsp;";
+                })
+                $("#coreResult").html(coreResult);
+            }
+        });
+    }
+    function fpNer(fpType) {
+        var input = $("#input").val();
+
+        $.ajax({
+            type: 'POST',
+            url: "http://localhost:8080/api/fpNer?type="+fpType,
+            contentType: 'text/plain; charset=utf-8',
+            data: input,
+            success: function(response) {
+                var fpResult = "";
+                $.each(response, function(index, value) {
+                    fpResult = fpResult + "<span class='badge badge-success'>" + value + "</span>&nbsp;";
+                })
+                $("#fpResult").html(fpResult);
+            }
+        });
+    }
+</script>
+
+
+</body>
+</html>
