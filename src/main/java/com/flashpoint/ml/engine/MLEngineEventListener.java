@@ -27,6 +27,6 @@ public class MLEngineEventListener {
     @EventListener
     public void onApplicationStart(ApplicationStartedEvent event) {
         log.info("Application started");
-        cityETLProcessor.processWorldCities();
+//        cityETLProcessor.processWorldCities();
     }
 }
