@@ -40,4 +40,4 @@ out/
 *.jpg
 *.jpeg
 *.png
-.DS_Store
+*DS_Store
