@@ -39,10 +39,14 @@ dependencies {
 	implementation 'edu.stanford.nlp:stanford-corenlp:4.3.0'
 	implementation 'edu.stanford.nlp:stanford-corenlp:4.3.0:models'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'ai.djl.mxnet:mxnet-engine:0.15.0'
+	implementation 'ai.djl.mxnet:mxnet-model-zoo:0.15.0'
+	implementation 'ai.djl:model-zoo:0.15.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
+	runtimeOnly 'ai.djl.mxnet:mxnet-native-auto:1.8.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.apache.beam:beam-sdks-java-core:2.32.0'
