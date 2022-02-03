@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  */
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/ner")
 public class NERRestController {
 
     @Autowired

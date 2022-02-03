@@ -12,7 +12,27 @@
                 var form_data = new FormData();
                 form_data.append('file', file_data);
                 $.ajax({
-                    url: 'http://localhost:8080/uploadimg', // point to server-side controller method
+                    url: 'http://localhost:8080/api/img/uploadimg', // point to server-side controller method
+                    dataType: 'text', // what to expect back from the server
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    type: 'post',
+                    success: function (response) {
+                        $('#msg').html(response); // display success response from the server
+                    },
+                    error: function (response) {
+                        $('#msg').html(response); // display error response from the server
+                    }
+                });
+            });
+            $('#ctr').on('click', function () {
+                var file_data = $('#csv-file').val();
+                var form_data = new FormData();
+                form_data.append('csv-file', file_data);
+                $.ajax({
+                    url: 'http://localhost:8080/api/ctr/predict', // point to server-side controller method
                     dataType: 'text', // what to expect back from the server
                     cache: false,
                     contentType: false,
@@ -32,11 +52,11 @@
 </head>
 <body>
 
-<a th:href="@{corenlp-ner}">corenlp</a>
-<a th:href="@{corenlp-ner.html}">corenlp</a>
-
 <p id="msg"></p>
 <input type="file" id="file" name="file" multiple />
 <button id="upload">Upload</button>
+
+<input type="text" id="csv-file" name="csv-file" />
+<button id="ctr">CTR</button>
 </body>
 </html>

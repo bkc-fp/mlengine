@@ -75,7 +75,7 @@
 
         $.ajax({
             type: 'POST',
-            url: "http://localhost:8080/api/coreNer?type="+coreType,
+            url: "http://localhost:8080/api/ner/coreNer?type="+coreType,
             contentType: 'text/plain; charset=utf-8',
             data: input,
             success: function(response) {
@@ -92,7 +92,7 @@
 
         $.ajax({
             type: 'POST',
-            url: "http://localhost:8080/api/fpNer?type="+fpType,
+            url: "http://localhost:8080/api/ner/fpNer?type="+fpType,
             contentType: 'text/plain; charset=utf-8',
             data: input,
             success: function(response) {
