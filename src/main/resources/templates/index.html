@@ -28,7 +28,7 @@
                 });
             });
             $('#ctr').on('click', function () {
-                var file_data = $('#csv-file').prop('files')[0];
+                var file_data = $('#csv-file').val();
                 var form_data = new FormData();
                 form_data.append('csv-file', file_data);
                 $.ajax({
@@ -56,7 +56,7 @@
 <input type="file" id="file" name="file" multiple />
 <button id="upload">Upload</button>
 
-<input type="file" id="csv-file" name="csv-file" />
+<input type="text" id="csv-file" name="csv-file" />
 <button id="ctr">CTR</button>
 </body>
 </html>

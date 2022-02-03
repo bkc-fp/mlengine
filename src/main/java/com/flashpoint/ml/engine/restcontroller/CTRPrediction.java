@@ -1,4 +1,4 @@
-package com.flashpoint.ml.engine.ml;
+package com.flashpoint.ml.engine.restcontroller;
 
 import ai.djl.ModelException;
 import ai.djl.inference.Predictor;
@@ -23,6 +23,12 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -35,18 +41,52 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author BumKi Cho
- */
-public class CTRPredictor {
+@RestController
+@RequestMapping (value = "/api/ctr")
+public class CTRPrediction {
 
+    @PostMapping
+    @RequestMapping(value = "/predict", params = {"csv-file"})
+    public static ResponseEntity<String> predictCTR(@RequestParam("csv-file") String filepath) {
+
+        String args = "--inputFile="+filepath;
+        CtrOptions options =
+                PipelineOptionsFactory.fromArgs(args).withValidation().as(CtrOptions.class);
+        options.setOutput("src/main/resources/output.txt");
+
+        Pipeline p = Pipeline.create(options);
+        PCollection<String> records = p.apply("ReadData", TextIO.read().from(options.getInputFile()));
+
+        // add unique id to each record
+        PCollection<String> addIds = records.apply("AddUUID", ParDo.of(new DoFn<String, String>() {
+            @ProcessElement
+            public void processElement(ProcessContext c) {
+                String uniqueID = UUID.randomUUID().toString();
+                c.output(uniqueID + "\t" + c.element());
+            }
+        }));
+
+        // convert categorical features to integer according to feature map used in training
+        PCollection<String> preprocess = addIds.apply("Preprocess", ParDo.of(new FeatureMap()));
+
+        // run inference using Deep Java Library
+        PCollection<String> ctr = preprocess.apply("Inference", ParDo.of(new Inference()));
+
+        ctr.apply(TextIO.write().to(options.getOutput()));
+        try {
+            p.run().waitUntilFinish();
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("completed", HttpStatus.OK);
+    }
 
     public static Map<String, Map<String, String>> readFeatureMap() {
         Map<String, Map<String, String>> featureMap = new ConcurrentHashMap<>();
+        String modelPath = new ClassPathResource("src/main/resources/feature_map.json").getPath();
 
-        String modelPath = new ClassPathResource("feature_map.json").getPath();
         try (Reader reader = Files.newBufferedReader(Paths.get(modelPath))) {
-//        try (Reader reader = Files.newBufferedReader(Paths.get(System.getProperty("ai.djl.repository.zoo.location") + "/feature_map.json"))) {
             Type mapType = new TypeToken<Map<String, Map<String, String>>>() {
             }.getType();
             featureMap = JsonUtils.GSON.fromJson(reader, mapType);
@@ -77,7 +117,7 @@ public class CTRPredictor {
         void setOutput(String value);
     }
 
-    public static class FeatureMap extends DoFn<String, String> {
+    static class FeatureMap extends DoFn<String, String> {
 
         private final Map<String, Map<String, String>> featureMap = readFeatureMap();
         private final int numFeatures = featureMap.size();
@@ -97,7 +137,7 @@ public class CTRPredictor {
         }
     }
 
-    public static class Inference extends DoFn<String, String> {
+    static class Inference extends DoFn<String, String> {
         static Predictor<String, String> predictor;
 
         static Predictor<String, String> getOrCreatePredictor() throws ModelException, IOException {
@@ -144,4 +184,5 @@ public class CTRPredictor {
             return Batchifier.STACK;
         }
     }
+
 }
