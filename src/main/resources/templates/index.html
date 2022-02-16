@@ -7,7 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(document).ready(function (e) {
-            $('#upload').on('click', function () {
+            $('#uploadimg').on('click', function () {
                 var file_data = $('#file').prop('files')[0];
                 var form_data = new FormData();
                 form_data.append('file', file_data);
@@ -48,15 +48,66 @@
                 });
             });
         });
+        function coreNer(coreType) {
+            var input = $("#input").val();
+            var apiUrl = "";
+
+            if(coreType=="SENT") {
+                apiUrl = "/sent/predict"
+            } else {
+                apiUrl = "/ner/coreNer?type="+coreType
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: "http://localhost:8080/api"+apiUrl,
+                contentType: 'text/plain; charset=utf-8',
+                data: input,
+                success: function(response) {
+                    if(apiUrl=="/sent/predict"){
+                        $('#msg').html(response);
+                    } else {
+                        var coreResult = "";
+                        $.each(response, function(index, value) {
+                            coreResult = coreResult + "<span class='badge badge-success'>" + value + "</span>&nbsp;";
+                        })
+                        $("#coreResult").html(coreResult);
+                    }
+                }
+            });
+        }
     </script>
 </head>
 <body>
 
-<p id="msg"></p>
 <input type="file" id="file" name="file" multiple />
-<button id="upload">Upload</button>
-
+<button id="uploadimg">Upload</button>
+<br>
 <input type="text" id="csv-file" name="csv-file" />
 <button id="ctr">CTR</button>
+<br>
+
+<form>
+    <div class="container">
+        <h3>Input:</h3>
+
+        <div class="form-group">
+            <textarea id="input" class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="coreType">Select Type</label>
+            <select class="form-control" id="coreType" onchange="coreNer(value)">
+                <option value=""></option>
+                <option value="ALL">NER - All</option>
+                <option value="CITY">NER - City</option>
+                <option value="SENT">Sentiment</option>
+            </select>
+        </div>
+        <h3>Output:</h3>
+        <div class="form-group" id="coreResult"></div>
+        <p id="msg"></p>
+    </div>
+</form>
 </body>
 </html>
