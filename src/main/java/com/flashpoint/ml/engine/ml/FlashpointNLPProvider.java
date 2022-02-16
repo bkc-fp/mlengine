@@ -1,5 +1,6 @@
 package com.flashpoint.ml.engine.ml;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +25,11 @@ public class FlashpointNLPProvider {
         properties = new Properties();
         properties.setProperty("annotators", propertiesName);
         String modelFilePath = System.getProperty("user.home")+"/Documents/ML/NER/Model/City/ner-city-model.ser.gz";
-//        if(FileUtils.getFile(modelFilePath).exists()) {
-//            properties.setProperty("ner.model","edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz,"+modelFilePath);
-//        } else {
+        if(FileUtils.getFile(modelFilePath).exists()) {
+            properties.setProperty("ner.model","edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz,"+modelFilePath);
+        } else {
             properties.setProperty("ner.model","edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz");
-//        }
+        }
 
         properties.setProperty("entitymentions.acronyms", "true");
         properties.setProperty("ner.combinationMode", "HIGH_RECALL");
