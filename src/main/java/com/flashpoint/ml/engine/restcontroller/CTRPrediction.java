@@ -148,7 +148,7 @@ public class CTRPrediction {
                 Criteria<String, String> criteria = Criteria.builder()
                         .setTypes(String.class, String.class)
                         .optTranslator(new CtrTranslator())
-                        .optEngine("MXNet")
+//                        .optEngine("MXNet")
                         .build();
                 ZooModel<String, String> model = criteria.loadModel();
                 predictor = model.newPredictor();

@@ -55,7 +55,7 @@
             if(coreType=="SENT") {
                 apiUrl = "/sent/predict"
             } else {
-                apiUrl = "/ner/coreNer?type="+coreType
+                apiUrl = "/nerbeam/coreNer?type="+coreType
             }
 
             $.ajax({
