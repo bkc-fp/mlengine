@@ -54,6 +54,8 @@
 
             if(coreType=="SENT") {
                 apiUrl = "/sent/predict"
+            } else if(coreType=="REL") {
+                apiUrl = "/rel/predict"
             } else {
                 apiUrl = "/nerbeam/coreNer?type="+coreType
             }
@@ -64,7 +66,7 @@
                 contentType: 'text/plain; charset=utf-8',
                 data: input,
                 success: function(response) {
-                    if(apiUrl=="/sent/predict"){
+                    if(apiUrl=="/sent/predict" || apiUrl=="/rel/predict"){
                         $('#msg').html(response);
                     } else {
                         var coreResult = "";
@@ -102,6 +104,7 @@
                 <option value="ALL">NER - All</option>
                 <option value="CITY">NER - City</option>
                 <option value="SENT">Sentiment</option>
+                <option value="REL">Relevance</option>
             </select>
         </div>
         <h3>Output:</h3>

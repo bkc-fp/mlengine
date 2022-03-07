@@ -1,0 +1,11 @@
+{"instances": [
+  {"numeric":[0,0,0,0,0,0],"text":"I have an account available from TD Bank DM me"},
+  {"numeric":[0,0,0,0,0,0],"text":"Insider access @ T Mobile hit me up"},
+  {"numeric":[0,0,0,0,0,0],"text":"She wet to pick up some milk at the store"},
+  {"numeric":[0,0,0,0,0,0],"text":"Thanks for the tip bruh"},
+
+  {"numeric":[5,5,5,5,5,5],"text":"I have an account available from TD Bank DM me"},
+  {"numeric":[5,5,5,5,5,5],"text":"Insider access @ T Mobile hit me up"},
+  {"numeric":[5,5,5,5,5,5],"text":"She went to pick up some milk at the store"},
+  {"numeric":[5,5,5,5,5,5],"text":"Thanks for the tip bruh"}
+]}
