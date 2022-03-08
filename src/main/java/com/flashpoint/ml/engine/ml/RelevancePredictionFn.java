@@ -58,10 +58,12 @@ public class RelevancePredictionFn  extends DoFn<String, String> {
             Criteria<String, Classifications> criteria =
                     Criteria.builder()
                             .setTypes(String.class, Classifications.class)
-                            .optModelPath(Paths.get("/Users/user72957245/Downloads/model_artifacts_relevance_classifier_combined_v0_saved_model.pb.zip"))
+                            .optModelPath(Paths.get("src/main/resources/saved_model.pb.zip"))
                             .optTranslator(new RelevanceTranslator())
+                            .optEngine("TensorFlow")
+//                            .optModelName("model_artifacts_relevance_classifier_combined_v0_saved_model.pb")
                             // This model was traced on CPU and can only run on CPU
-                            // .optDevice(Device.cpu())
+                            .optDevice(Device.cpu())
                             .optProgress(new ProgressBar())
                             .build();
 
